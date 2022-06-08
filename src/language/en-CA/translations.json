@@ -1,0 +1,21 @@
+{
+  /** setup */
+  "default" : {
+    "endpoint" : {
+      "message" : "API Endpoint Doesn't Exist",
+      "detail" :  ""
+    }
+  },
+
+  /** /user */
+  "user" : {
+    "create" : {
+      "message" : "User Created Successfully",
+      "detail" :  ""
+    },
+    "exists" : {
+      "message" : "User Exists",
+      "detail" :  ""
+    }
+  }
+}

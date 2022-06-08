@@ -1,0 +1,41 @@
+{
+  /** validation */
+  "validate" : {
+    "required" : {
+      "message" : "Validation Failed",
+      "detail" :  "The following fields don't match ${params}"
+    },
+    "unexpected-properties" : {
+      "message" : "Validation Failed",
+      "detail" :  "The following fields don't match ${params}"
+    },
+    "format" : {
+      "message" : "Validation Failed",
+      "detail" :  "The following fields don't match ${params}"
+    },
+    "pattern" : {
+      "message" : "Validation Failed",
+      "detail" :  "The following fields don't match ${params}"
+    },
+    "maxLength" : {
+      "message" : "Validation Failed",
+      "detail" :  "The following fields don't match ${params}"
+    },
+    "minLength" : {
+      "message" : "Validation Failed",
+      "detail" :  "The following fields don't match ${params}"
+    }
+  },
+
+  /** system errors */
+  "system": {
+    "preparing" : {
+      "message" : "Validation Failed",
+      "detail" :  "The following fields don't match ${params}"
+    },
+    "insert" : {
+      "message" : "Validation Failed",
+      "detail" :  "The following fields don't match ${params}"
+    },
+  }
+}
