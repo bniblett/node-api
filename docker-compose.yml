@@ -17,7 +17,7 @@ services:
             - database
         command: >
             bash -c "npm install
-            && npm run dev"
+            && npm run start:nodemon"
     database:
         image: mysql:8.0
         ports:
