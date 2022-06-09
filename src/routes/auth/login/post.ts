@@ -13,25 +13,25 @@ import { Request, Response } from "express";
  *  - Encrypt Library
  *  - Tokens Library
  */
-import APIResponse from "../../libraries/APIResponse";
-import { ajv, JSONSchemaType } from "../../libraries/ajv";
-import Encrypt from "../../libraries/Encrypt";
-import Tokens from "../../libraries/Tokens";
+import APIResponse from "../../../libraries/APIResponse";
+import { ajv, JSONSchemaType } from "../../../libraries/ajv";
+import Encrypt from "../../../libraries/Encrypt";
+import Tokens from "../../../libraries/Tokens";
 
 /**
  * The Model script will load a list of all files inside the
  * /models folder. Just declare which model inside the {} that
  * is required, and it will pull it automatically
  */
-import { Query, SchemaInterface, SchemaRules } from "../../models/Users";
+import { Query, SchemaInterface, SchemaRules } from "../../../models/Users";
 
 /**
  * Import the following Helper Scripts:
  *  - Data Helper
  *  - Validation Helper
  */
-import { secureData } from "../../helpers/data";
-import { buildErrors } from "../../helpers/validation";
+import { secureData } from "../../../helpers/data";
+import { buildErrors } from "../../../helpers/validation";
 
 /**
  * Start Query Object
@@ -96,6 +96,8 @@ export const route = (req: Request, res: Response): void => {
     });
     return;
   }
+
+  /* Search for user's Email Address */
   Users.findOne({ Email: Props.Email })
     .then((user) => {
       /**
@@ -103,17 +105,22 @@ export const route = (req: Request, res: Response): void => {
        * no user or the wrong password
        */
       const unauthorized = { code: "auth-failed" };
+
+      /* If there isn't a user, display unauthorized message */
       if (typeof user == "undefined") {
         response.unauthorized(unauthorized);
+
+      /* If there is a user, perform more checks */
       } else {
+        /* Compare user object password to props password */
         const encrypt = new Encrypt();
         encrypt.compare(Props.Password, user.Password).then((compare) => {
           /* If the passwords match */
           if (compare === false) {
             response.unauthorized(unauthorized);
           } else {
-            /* Delete Password from Output */
-            delete user.Password;
+            /* Delete Password from user object */
+            if ("Password" in user) delete user.Password;
 
             const Token = new Tokens();
             response.ok({
