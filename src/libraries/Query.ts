@@ -12,21 +12,6 @@ import { dbconn } from "../database/mysql";
  */
 const conn = knex(dbconn);
 
-/**
- * Defined Types
- */
-type TableName = string;
-type Fields = string[] | undefined;
-type Timeout = number | undefined;
-
-/**
- * Defined Interfaces
- */
-interface Params {
-  tableName: TableName;
-  [key: string]: any;
-}
-
 /*
  * This QueryHelper is designed to use a knexjs module to store and retrieve
  * data from a database.
@@ -34,20 +19,20 @@ interface Params {
  * Common functionality is created and listed below, and additional custom
  * functionality can be added by extending this class.
  */
-class QueryHelper {
+class QueryHelper implements QueryInterface {
   /* Class Props */
-  tableName: TableName;
-  fields: Fields;
-  timeout: Timeout;
-  query: any = conn; // default connection
+  tableName;
+  fields;
+  timeout;
+  query = conn; // default connection
 
-  constructor(params: Params) {
+  constructor(params: QueryConstructorParams) {
     this.tableName = params.tableName;
-    this.fields = this.fields = "fields" in params ? params.fields : [];
-    this.timeout = this.timeout = "timeout" in params ? params.timeout : 1000;
+    this.fields = "fields" in params ? params.fields : [];
+    this.timeout = "timeout" in params ? params.timeout : 1000;
   }
 
-  create(props: any) {
+  create(props) {
     delete props.ID; // not allowed to set `ID`
 
     return this.query
@@ -59,14 +44,14 @@ class QueryHelper {
       });
   }
 
-  findOne(filters: any) {
+  findOne(filters) {
     return this.find(filters).then((results) => {
       if (!Array.isArray(results)) return results;
       return results[0];
     });
   }
 
-  find(filters: any) {
+  find(filters) {
     return this.query
       .select(this.fields)
       .from(this.tableName)
@@ -75,30 +60,74 @@ class QueryHelper {
   }
 
   findAll() {
-    this.query.select(this.fields).from(this.tableName).timeout(this.timeout);
+    return this.query
+      .select(this.fields)
+      .from(this.tableName)
+      .timeout(this.timeout);
   }
 
-  findById(ID: number) {
-    this.query
+  findById(ID) {
+    return this.query
       .select(this.fields)
       .from(this.tableName)
       .where({ ID })
       .timeout(this.timeout);
   }
 
-  update(ID: number, props: any) {
-    delete props.ID;
-
-    return this.query
+  update(props, filters, custom?) {
+    const query = this.query
       .update(props)
       .from(this.tableName)
-      .where({ ID })
+      .where(filters)
       .returning(this.fields)
       .timeout(this.timeout);
+
+    if (typeof custom === "object" && Object.keys(custom).length >= 1) {
+      custom.forEach((item, index) => {
+        query.andWhere(item.column, item.operator, item.value);
+      });
+    }
+
+    return query;
   }
 
   destroy(ID: number): void {
     this.query.del().from(this.tableName).where({ ID }).timeout(this.timeout);
+  }
+
+  setToken(props: any) {
+    const { ResetToken, Email } = props;
+
+    return this.query
+      .update({
+        ResetToken: this.query.fn.uuidToBin(ResetToken),
+        TokenExpiry: this.query.raw("date_add(?, INTERVAL ? day)", [
+          this.query.fn.now(),
+          process.env.PW_RESET_TOKEN_EXPIRY,
+        ]),
+      })
+      .from(this.tableName)
+      .where({ Email })
+      .returning(this.fields)
+      .timeout(this.timeout);
+  }
+
+  checkToken(props: any) {
+    const { Email } = props;
+
+    return this.query
+      .select(this.fields)
+      .from(this.tableName)
+      .where({
+        Email: Email,
+        Status: "Active",
+      })
+      .andWhere("TokenExpiry", ">", this.query.fn.now())
+      .timeout(this.timeout);
+  }
+
+  convertToken(Token) {
+    return this.query.fn.binToUuid(Token);
   }
 }
 

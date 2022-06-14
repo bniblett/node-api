@@ -5,7 +5,7 @@
  */
 import bcrypt from "bcrypt";
 
-class Encrypt {
+class Encrypt implements EncryptInterface {
   /* class props */
   SALT_ROUNDS: number = 10;
 
@@ -17,7 +17,7 @@ class Encrypt {
   }
 
   /* compare passwords */
-  compare(PlainPassword: string, HashedPassword: string) {
+  compare(PlainPassword, HashedPassword) {
     return bcrypt.compare(PlainPassword, HashedPassword);
   }
 }

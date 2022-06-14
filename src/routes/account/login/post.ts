@@ -14,7 +14,7 @@ import { Request, Response } from "express";
  *  - Tokens Library
  */
 import APIResponse from "../../../libraries/APIResponse";
-import { ajv, JSONSchemaType } from "../../../libraries/ajv";
+import { ajv, JSONSchemaType } from "../../../libraries/Ajv";
 import Encrypt from "../../../libraries/Encrypt";
 import Tokens from "../../../libraries/Tokens";
 
@@ -101,23 +101,23 @@ export const route = (req: Request, res: Response): void => {
   Users.findOne({ Email: Props.Email })
     .then((user) => {
       /**
-       * Reusable const 'unauthorized' to be used when there is
+       * Reusable const 'not_found' to be used when there is
        * no user or the wrong password
        */
-      const unauthorized = { code: "auth-failed" };
+      const not_found = { code: "user-not-found" };
 
-      /* If there isn't a user, display unauthorized message */
+      /* If there isn't a user, display not found message */
       if (typeof user == "undefined") {
-        response.unauthorized(unauthorized);
+        response.not_found(not_found);
 
       /* If there is a user, perform more checks */
       } else {
         /* Compare user object password to props password */
         const encrypt = new Encrypt();
         encrypt.compare(Props.Password, user.Password).then((compare) => {
-          /* If the passwords match */
-          if (compare === false) {
-            response.unauthorized(unauthorized);
+          /* If the passwords DO NOT match, or user isn't active */
+          if (compare === false || user.Status !== "Active") {
+            response.not_found(not_found);
           } else {
             /* Delete Password from user object */
             if ("Password" in user) delete user.Password;
@@ -135,7 +135,7 @@ export const route = (req: Request, res: Response): void => {
     .catch((err) => {
       response.server_error({
         code: "system-find",
-        data: { Email: Props.Email },
+        payload: { Email: Props.Email },
         err: err,
       });
     });

@@ -9,23 +9,28 @@ import express from "express";
 /* Invoke Express Router */
 const router = express.Router();
 
+/* Import Middlewares */
+import { IsAuthenticated } from "../middleware/Authenticate";
+
 /* Default Routes */
 import { route as DefaultGet } from "./default/get";
 import { route as DefaultPost } from "./default/post";
 
-/* User Routes */
-//import { route as UserGet } from "./user/get";
-import { route as UserPost } from "./user/post";
-
-/* Auth Routes */
-import { route as AuthLoginPost } from "./auth/login/post";
+/* Account Routes */
+import { route as LoginPost } from "./account/login/post";
+import { route as ForgotPasswordPost } from "./account/password/forgot/post";
+import { route as ResetPasswordPut } from "./account/password/reset/put";
+import { route as AccountPost } from "./account/post";
+import { route as UserGet } from "./account/get";
 
 /**
  * Add routes to router, and export
  */
-//router.get("*", UserGet);
-router.post("/user", UserPost);
-router.post("/auth/login", AuthLoginPost);
+router.get("/account", IsAuthenticated, UserGet);
+router.post("/account/login", LoginPost);
+router.post("/account/password/forgot", ForgotPasswordPost);
+router.put("/account/password/reset/:Email/:ResetToken", ResetPasswordPut);
+router.post("/account", AccountPost);
 
 /**
  * Default Routes for a Catch-All

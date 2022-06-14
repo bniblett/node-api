@@ -37,5 +37,25 @@
       "message" : "Validation Failed",
       "detail" :  "The following fields don't match ${params}"
     },
+    "update" : {
+      "message" : "Validation Failed",
+      "detail" :  "The following fields don't match ${params}"
+    },
+    "find" : {
+      "message" : "Validation Failed",
+      "detail" :  "The following fields don't match ${params}"
+    },
+  },
+
+  /** tokens */
+  "tokens" : {
+    "missing" : {
+      "message" : "Validation Failed",
+      "detail" :  "The following fields don't match ${params}"
+    },
+    "invalid" : {
+      "message" : "Validation Failed",
+      "detail" :  "The following fields don't match ${params}"
+    },
   }
 }

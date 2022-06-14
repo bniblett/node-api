@@ -11,14 +11,14 @@ import { Request, Response, NextFunction } from "express";
  *
  * Example: Ensure that the page number is valid, the locale is
  * correctly set.
-  *
+ *
  * @param req  Object The Express Request Object
  * @param res  Object The Express Response Object
  *
  * @author Byron Niblett <bniblett@gmail.com>
  * @return null
-  */
- export function Validate(req: Request, res: Response, next: NextFunction) {
+ */
+export function Validate(req: Request, res: Response, next: NextFunction) {
   next();
 }
 
@@ -32,8 +32,8 @@ import { Request, Response, NextFunction } from "express";
  *
  * @author Byron Niblett <bniblett@gmail.com>
  * @return null
-  */
- export function Debug(req: Request, res: Response, next: NextFunction) {
+ */
+export function Debug(req: Request, res: Response, next: NextFunction) {
   if (process.env.NODE_ENV === "development") {
     //console.log("body", req.body);
     //console.log("query", req.query);

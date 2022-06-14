@@ -21,7 +21,7 @@ interface SchemaInterface {
   ResetToken: string;
   TokenExpiry: string;
   CreateDate: string;
-  IsActive: string;
+  Status: string;
 }
 
 /**
@@ -59,6 +59,7 @@ const SchemaRules = {
   },
   ResetToken: {
     type: "string",
+    format: "uuid",
   },
   TokenExpiry: {
     type: "integer",
@@ -67,8 +68,8 @@ const SchemaRules = {
   CreateDate: {
     type: "string",
   },
-  IsActive: {
-    type: "string",
+  Status: {
+    enum: ["Active", "Inactive", "Pending"],
   },
 };
 

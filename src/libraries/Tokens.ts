@@ -3,6 +3,11 @@
 /**
  * Import the Request and Response objects from Express
  */
+import { Request, Response } from "express";
+
+/**
+ * Import the Request and Response objects from Express
+ */
 import jwt from "jsonwebtoken";
 
 /**
@@ -14,18 +19,30 @@ import jwt from "jsonwebtoken";
  * @author Byron Niblett <bniblett@gmail.com>
  * @return Object
  */
-class Tokens {
+class Tokens implements TokensInterface {
 
   constructor() {}
 
   sign(data) {
-    return jwt.sign(
-      data,
-      "C*F-JaNdRgUkXn2r5u8x/A?D(G+KbPeShVmYq3s6v9y$B&E)H@McQfTjWnZr4u7w",
-      {
-        expiresIn: "24h",
-      }
-    );
+    return jwt.sign(data, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRY,
+    });
+  }
+
+  verify(token) {
+    jwt.verify(token, process.env.JWT_SECRET);
+  }
+
+  decode(token) {
+    try {
+      const { ID } = jwt.decode(token) as {
+        ID: TokenUserID;
+      };
+
+      return ID;
+    } catch {
+      throw new Error("invalid");
+    }
   }
 }
 

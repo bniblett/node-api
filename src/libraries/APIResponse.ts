@@ -5,16 +5,6 @@
  */
 import { Request, Response } from "express";
 
-/** Define Types */
-interface ResponseBody {
-  success: boolean;
-  code: string;
-  message: string;
-  path: string;
-  timestamp: string;
-  [key: string]: any;
-}
-
 /**
  * Build the api response that will be sent back to the user
  *
@@ -24,18 +14,18 @@ interface ResponseBody {
  * @author Byron Niblett <bniblett@gmail.com>
  * @return Object
  */
-class APIResponse {
-
+class APIResponse implements APIResponseInterface {
   /* HTTP Response Codes */
-  OK: number = 200;
-  BAD_REQUEST: number = 400;
-  UNAUTHORIZED: number = 401;
-  FORBIDDEN: number = 403;
-  NOT_FOUND: number = 404;
-  UNSUPPORTED_ACTION: number = 405;
-  CONFLICT: number = 409;
-  VALIDATION_FAILED: number = 422;
-  SERVER_ERROR: number = 500;
+  OK = 200;
+  BAD_REQUEST = 400;
+  UNAUTHORIZED = 401;
+  FORBIDDEN = 403;
+  NOT_FOUND = 404;
+  UNSUPPORTED_ACTION = 405;
+  CONFLICT = 409;
+  VALIDATION_FAILED = 422;
+  SERVER_ERROR = 500;
+  date;
 
   /* Class Props */
   res: Response;
@@ -44,11 +34,10 @@ class APIResponse {
   constructor(req: Request, res: Response) {
     this.req = req;
     this.res = res;
+    this.date = new Date();
   }
 
-  build(status: number, body: any) {
-    /* variables */
-    const date = new Date();
+  build(status, body) {
 
     /**
      * To Do:
@@ -58,14 +47,14 @@ class APIResponse {
      * 3. modify `help` - add the code instead of the URL. Replace '-' with '/'
      * 4. ensure toISOString() is actual GMT time
      */
-    let _body: ResponseBody = {
+    let _body: APIResponseBody = {
       success: body.success,
       code: body.code,
       message: "Incorrect username and password",
       detail: "Ensure that the username and password are correct",
       help: "https://example.com/help/error" + this.res.req.originalUrl,
       path: this.res.req.originalUrl,
-      timestamp: date.toISOString(),
+      timestamp: this.date.toISOString(),
     };
 
     /**
@@ -79,7 +68,8 @@ class APIResponse {
     }
 
     /* keys to add */
-    if ("payload" in body) _body = Object.assign(_body, { payload: body.payload });
+    if ("payload" in body)
+      _body = Object.assign(_body, { payload: body.payload });
     if ("token" in body) _body = Object.assign(_body, { token: body.token });
     if ("errors" in body) _body = Object.assign(_body, { errors: body.errors });
 
@@ -88,16 +78,16 @@ class APIResponse {
   }
 
   ok(data) {
-    let payload: any;
-    let token: string;
-    let body;
+    let body: APIBuildBody;
 
     body = {
+      language: "translations.json",
       success: true,
       code: data.code,
     };
 
-    if ("payload" in data) body = Object.assign(body, { payload: data.payload });
+    if ("payload" in data)
+      body = Object.assign(body, { payload: data.payload });
     if ("token" in data) body = Object.assign(body, { token: data.token });
 
     return this.build(this.OK, body);
@@ -106,6 +96,7 @@ class APIResponse {
   /* Unauthorized Response */
   unauthorized(data) {
     return this.build(this.UNAUTHORIZED, {
+      language: "translations.json",
       success: false,
       code: data.code,
     });
@@ -114,6 +105,7 @@ class APIResponse {
   /* Validation Failed */
   validation(data) {
     return this.build(this.VALIDATION_FAILED, {
+      language: "errors.json",
       success: false,
       code: data.code,
       errors: {
@@ -127,6 +119,7 @@ class APIResponse {
   /* conflict with the code */
   conflict(data) {
     return this.build(this.CONFLICT, {
+      language: "translations.json",
       success: false,
       code: data.code,
     });
@@ -135,6 +128,7 @@ class APIResponse {
   /* Not Found Error */
   not_found(data) {
     return this.build(this.NOT_FOUND, {
+      language: "translations.json",
       success: false,
       code: data.code,
     });
@@ -142,8 +136,8 @@ class APIResponse {
 
   /* Server Error */
   server_error(data) {
-    console.log(data);
     return this.build(this.SERVER_ERROR, {
+      language: "errors.json",
       success: false,
       code: data.code,
     });

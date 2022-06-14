@@ -1,5 +1,5 @@
 {
-  /** setup */
+  /** default */
   "default" : {
     "endpoint" : {
       "message" : "API Endpoint Doesn't Exist",
@@ -7,7 +7,31 @@
     }
   },
 
-  /** /user */
+  /* User Login */
+  "auth" : {
+    "login" : {
+      "message" : "User Login Successful.",
+      "detail" :  ""
+    },
+    "failed" : {
+      "message" : "User Login Failed. Invalid Email or Password",
+      "detail" :  ""
+    }
+  },
+
+  /* Password Reset */
+  "token" : {
+    "valid" : {
+      "message" : "User Login Successful.",
+      "detail" :  ""
+    },
+    "invalid" : {
+      "message" : "User Login Failed. Invalid Email or Password",
+      "detail" :  ""
+    }
+  },
+
+  /** user accounts */
   "user" : {
     "create" : {
       "message" : "User Created Successfully",
@@ -15,6 +39,10 @@
     },
     "exists" : {
       "message" : "User Exists",
+      "detail" :  ""
+    },
+    "not-found" : {
+      "message" : "User Not Found",
       "detail" :  ""
     }
   }

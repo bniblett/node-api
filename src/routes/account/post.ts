@@ -14,7 +14,7 @@ import { Request, Response } from "express";
  *  - Tokens Library
  */
 import APIResponse from "../../libraries/APIResponse";
-import { ajv, JSONSchemaType } from "../../libraries/ajv";
+import { ajv, JSONSchemaType } from "../../libraries/Ajv";
 import Encrypt from "../../libraries/Encrypt";
 import Tokens from "../../libraries/Tokens";
 
@@ -125,7 +125,7 @@ export const route = (req: Request, res: Response): void => {
               .catch((err) => {
                 response.server_error({
                   code: "system-insert",
-                  data: props,
+                  payload: props,
                   err: err,
                 });
               });
@@ -133,21 +133,20 @@ export const route = (req: Request, res: Response): void => {
           .catch((err) =>
             response.server_error({
               code: "system-preparing",
-              data: Props,
+              payload: Props,
               err: err,
             })
           );
       } else {
         response.conflict({
-          user: false,
-          code: "user-conflict",
+          code: "user-exists",
         });
       }
     })
     .catch((err) => {
       response.server_error({
         code: "system-find",
-        data: { Email: Props.Email },
+        payload: { Email: Props.Email },
         err: err,
       });
     });

@@ -43,11 +43,10 @@ app.use(helmet({}));
  */
 app.use(express.json());
 
-
 /**
  * Import all middleware to be used within the application
  */
-import { Debug, Validate } from "./middleware/setup";
+import { Debug, Validate } from "./middleware/Setup";
 
 /**
  * Import all Routes to be used within the application

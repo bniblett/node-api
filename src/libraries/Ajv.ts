@@ -13,9 +13,10 @@ import addFormats from "ajv-formats";
  * - email
  * - date-time
  * - password
+ * - uuid
  */
 const ajv = new Ajv();
-addFormats(ajv, ["email", "date-time", "password"]);
+addFormats(ajv, ["email", "date-time", "password", "uuid"]);
 
 ajv.addFormat(
   "_password",
