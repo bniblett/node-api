@@ -15,7 +15,7 @@ import APIResponse from "../../libraries/APIResponse";
  * /models folder. Just declare which model inside the {} that
  * is required, and it will pull it automatically
  */
-import { Query, SchemaInterface, SchemaRules } from "../../models/Users";
+import { Query } from "../../models/Users";
 
 /**
  * Start Query Object

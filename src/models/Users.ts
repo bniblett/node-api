@@ -8,23 +8,6 @@
 import Query from "../libraries/Query";
 
 /**
- * This is the schema interface setup. This will declare what
- * property type names our schema object will have in validation.
- */
-interface SchemaInterface {
-  ID: number;
-  Email: string;
-  Password: string;
-  FirstName: string;
-  LastName: string;
-  Salutation: string;
-  ResetToken: string;
-  TokenExpiry: string;
-  CreateDate: string;
-  Status: string;
-}
-
-/**
  * These are the Ajv Module validation rules that will
  * be passed to each /user endpoint script.
  */
@@ -35,7 +18,7 @@ const SchemaRules = {
   Email: {
     type: "string",
     minLength: 5,
-    maxLength: 60,
+    maxLength: 255,
     format: "email",
   },
   Password: {
@@ -73,4 +56,4 @@ const SchemaRules = {
   },
 };
 
-export { Query, SchemaInterface, SchemaRules };
+export { Query, SchemaRules };

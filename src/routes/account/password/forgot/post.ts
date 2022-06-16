@@ -22,7 +22,7 @@ import { ajv, JSONSchemaType } from "../../../../libraries/Ajv";
  * /models folder. Just declare which model inside the {} that
  * is required, and it will pull it automatically
  */
-import { Query, SchemaInterface, SchemaRules } from "../../../../models/Users";
+import { Query, SchemaRules } from "../../../../models/Users";
 
 /**
  * Import the following Helper Scripts:
@@ -68,7 +68,7 @@ export const route = (req: Request, res: Response): void => {
   /**
    * Build Schema for validation
    */
-  const Schema: JSONSchemaType<SchemaInterface> = {
+  const Schema: JSONSchemaType<SchemaUsers> = {
     type: "object",
     properties: Rules,
     required: ["Email"],
