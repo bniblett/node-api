@@ -1,13 +1,10 @@
 {
-  /** default */
   "default" : {
     "endpoint" : {
       "message" : "API Endpoint Doesn't Exist",
       "detail" :  ""
     }
   },
-
-  /* User Login */
   "auth" : {
     "login" : {
       "message" : "User Login Successful.",
@@ -18,8 +15,6 @@
       "detail" :  ""
     }
   },
-
-  /* Password Reset */
   "token" : {
     "valid" : {
       "message" : "User Login Successful.",
@@ -30,8 +25,6 @@
       "detail" :  ""
     }
   },
-
-  /** user accounts */
   "user" : {
     "create" : {
       "message" : "User Created Successfully",
@@ -41,7 +34,7 @@
       "message" : "User Exists",
       "detail" :  ""
     },
-    "not-found" : {
+    "none" : {
       "message" : "User Not Found",
       "detail" :  ""
     }

@@ -38,14 +38,14 @@ export const route = (req: Request, res: Response): void => {
   Users.findById(req.UserID)
     .then((results) => {
       if (results.length === 0) {
-        response.not_found({ code: "user-not-found" });
+        response.not_found({ code: "user-none" });
       } else {
         const user = results[0];
         delete user.Password;
 
         response.ok({
           payload: user,
-          code: "user-found",
+          code: "user-exists",
         });
       }
     })

@@ -1,5 +1,7 @@
 "use strict";
 
+import fs from "fs";
+
 /**
  * Import the Request and Response objects from Express
  */
@@ -47,7 +49,7 @@ class APIResponse implements APIResponseInterface {
      * 3. modify `help` - add the code instead of the URL. Replace '-' with '/'
      * 4. ensure toISOString() is actual GMT time
      */
-    let _body: APIResponseBody = {
+    const _body: APIResponseBody = {
       success: body.success,
       code: body.code,
       message: "Incorrect username and password",
@@ -57,24 +59,52 @@ class APIResponse implements APIResponseInterface {
       timestamp: this.date.toISOString(),
     };
 
+    const getMessage = this.buildMessage(
+      body.language,
+      body.code,
+      body?.errors
+    );
+    let output = { ..._body, ...getMessage };
+
     /**
      * IF data.success is true:
      *
      * delete keys from body object
      */
-    if (_body.success === true) {
-      if ("help" in _body) delete _body.help;
-      if ("detail" in _body) delete _body.detail;
+    if (body.success === true) {
+      if ("help" in output) delete output.help;
+      //if ("detail" in output) delete output.detail;
     }
 
     /* keys to add */
     if ("payload" in body)
-      _body = Object.assign(_body, { payload: body.payload });
-    if ("token" in body) _body = Object.assign(_body, { token: body.token });
-    if ("errors" in body) _body = Object.assign(_body, { errors: body.errors });
+      output = Object.assign(output, { payload: body.payload });
+    if ("token" in body) output = Object.assign(output, { token: body.token });
+    if ("errors" in body)
+      output = Object.assign(output, { errors: body.errors });
 
     /** Return response */
-    this.res.status(status).json(_body);
+    this.res.status(status).json(output);
+  }
+
+  buildMessage(file, code, errors) {
+    const readFile = fs.readFileSync(
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      `./src/language/${this.req.locale}/${file}`,
+      "utf8"
+    );
+    const parsed = JSON.parse(readFile);
+    const split = code.split("-");
+    const section = split[0];
+    const option = split[1];
+
+    const output = parsed[section][option];
+
+    if (typeof errors === "object") {
+      output.detail = output.detail.replace("_FIELD_", errors.field);
+      output.detail = output.detail.replace("_EXPECTED_", errors.expected);
+    }
+    return output;
   }
 
   ok(data) {

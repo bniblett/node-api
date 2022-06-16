@@ -1,17 +1,16 @@
 {
-  /** validation */
   "validate" : {
     "required" : {
       "message" : "Validation Failed",
-      "detail" :  "The following fields don't match ${params}"
+      "detail" :  "The following fields are missing from the JSON Body: '_FIELD_'"
     },
-    "unexpected-properties" : {
+    "properties" : {
       "message" : "Validation Failed",
-      "detail" :  "The following fields don't match ${params}"
+      "detail" :  "Please remove field '_FIELD_' from the JSON Body."
     },
     "format" : {
       "message" : "Validation Failed",
-      "detail" :  "The following fields don't match ${params}"
+      "detail" :  "This field is expected to be a(n) '_EXPECTED_' field."
     },
     "pattern" : {
       "message" : "Validation Failed",
@@ -19,15 +18,13 @@
     },
     "maxLength" : {
       "message" : "Validation Failed",
-      "detail" :  "The following fields don't match ${params}"
+      "detail" :  "The following fields aren't meeting maximum length requirements: '_FIELD_'"
     },
     "minLength" : {
       "message" : "Validation Failed",
-      "detail" :  "The following fields don't match ${params}"
+      "detail" :  "The following fields aren't meeting minimum length requirements: '_FIELD_'"
     }
   },
-
-  /** system errors */
   "system": {
     "preparing" : {
       "message" : "Validation Failed",
@@ -44,10 +41,8 @@
     "find" : {
       "message" : "Validation Failed",
       "detail" :  "The following fields don't match ${params}"
-    },
+    }
   },
-
-  /** tokens */
   "tokens" : {
     "missing" : {
       "message" : "Validation Failed",
@@ -56,6 +51,6 @@
     "invalid" : {
       "message" : "Validation Failed",
       "detail" :  "The following fields don't match ${params}"
-    },
+    }
   }
 }

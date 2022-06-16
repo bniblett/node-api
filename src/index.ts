@@ -47,6 +47,7 @@ app.use(express.json());
  * Import all middleware to be used within the application
  */
 import { Debug, Validate } from "./middleware/Setup";
+import { SetLocale } from "./middleware/Locale";
 
 /**
  * Import all Routes to be used within the application
@@ -56,7 +57,7 @@ import Routes from "./routes";
 /**
  * Apply all middleware validation and route endpoints
  */
-app.use("*", Debug, Validate);
+app.use("*", Debug, Validate, SetLocale);
 app.use("/api", Routes);
 
 /**

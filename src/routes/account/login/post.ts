@@ -104,7 +104,7 @@ export const route = (req: Request, res: Response): void => {
        * Reusable const 'not_found' to be used when there is
        * no user or the wrong password
        */
-      const not_found = { code: "user-not-found" };
+      const not_found = { code: "user-none" };
 
       /* If there isn't a user, display not found message */
       if (typeof user == "undefined") {

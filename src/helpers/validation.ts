@@ -59,7 +59,7 @@ const buildErrors = (validate) => {
 
       /* Fields are included that shoudn't */
       case "additionalProperties":
-        codeType = "unexpected-properties";
+        codeType = "properties";
         fieldName = error?.params?.additionalProperty;
         type = "UnexpectedField";
         expected = null;
@@ -67,7 +67,7 @@ const buildErrors = (validate) => {
 
       /* custom format filters */
       case "format":
-        codeType = "field-format";
+        codeType = "format";
         fieldName = field;
         type = error?.params?.format;
         expected = error?.params?.format;
@@ -75,7 +75,7 @@ const buildErrors = (validate) => {
 
       /* custom pattern filters */
       case "pattern":
-        codeType = "field-pattern";
+        codeType = "pattern";
         fieldName = field;
         type = error?.params?.pattern;
         expected = null;
