@@ -1,0 +1,15 @@
+{
+  "name": "example",
+  "version": "0.3.0",
+  "description": "apidoc example project.",
+  "apidoc": {
+    "header": {
+      "title": "Introduction",
+      "filename": "./docs-src/header.md"
+    },
+    "footer": {
+      "title": "Best practices",
+      "filename": "./docs-src/footer.md"
+    }
+  }
+}
