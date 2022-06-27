@@ -1,6 +1,56 @@
 "use strict";
 
 /**
+ * @api {post} /account/ Create New User
+ * @apiName CreateUser
+ * @apiGroup Accounts
+ * @apiVersion 0.0.1
+ * @apiUse CommonHeaders
+ * @apiPermission None
+ * @apiSampleRequest off
+ *
+ * @apiDescription This function will create a new user and
+ * return json response, using the POST method, with the UserID
+ *
+ * @apiParamExample {json} Request Body:
+ *     {
+ *       "Email": "test@email.com",
+ *       "Password": "Testing123!",
+ *       "Profile": {
+ *         "FirstName": "John",
+ *         "LastName": "Smith",
+ *         "Salutation": "Dr.",
+ *       }
+ *     }
+ *
+ * @apiBody {String} Email               Mandatory Unique Email Address.
+ * @apiBody {String} Password            Mandatory Password.
+ * @apiBody {Object} Profile             Mandatory Profile object.
+ * @apiBody {String} Profile[FirstName]  Mandatory User First Name.
+ * @apiBody {String} Profile[LastName]   Mandatory User Last Name.
+ * @apiBody {String} Profile[Salutation] Mandatory User Salutation.
+ *
+ * @apiUse 422Example
+ * @apiUse 500Example
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *     The 'Token' field is the JSON Web Token, and it should be
+ *     passed to the api endpoints that require authentication.
+ *     See the "Introduction" tab to learn more.
+ *
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "success": true,
+ *       "code": "user-exists",
+ *       "message": "Lorem ipsum dolor sit amet",
+ *       "detail": "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+ *       "path": "/account",
+ *       "timestamp": "YYYY-MM-DDTHH:MM:SS.000Z",
+ *       "payload":{Number},
+ *       "token": "xxxxxxx.xxxxxxx.xxxxxxx"
+ *     }
+ */
+/**
  * Import Module Packages
  *  - the Request and Response objects from Express
  */
@@ -12,37 +62,30 @@ import { Request, Response } from "express";
  *  - Ajv Library (Class & Type)
  *  - Encrypt Library
  *  - Tokens Library
+ *  - Query Library
  */
 import APIResponse from "../../libraries/APIResponse";
-import { ajv, JSONSchemaType } from "../../libraries/Ajv";
+import { ajv } from "../../libraries/Ajv";
 import Encrypt from "../../libraries/Encrypt";
 import Tokens from "../../libraries/Tokens";
+import Query from "../../libraries/Query";
 
 /**
- * The Model script will load a list of all files inside the
- * /models folder. Just declare which model inside the {} that
- * is required, and it will pull it automatically
+ * Import the Schema from the Model
  */
-import { Query, SchemaRules } from "../../models/Users";
+import { Email, Password, Profile } from "../../models/Users";
 
 /**
- * Import the following Helper Scripts:
+ * Import the following Util Helper Scripts:
  *  - Data Helper
  *  - Validation Helper
  */
-import { secureData } from "../../helpers/data";
-import { buildErrors } from "../../helpers/validation";
+import { buildErrors } from "../../utils/helpers";
 
 /**
  * Start Query Object
  */
 const Users = new Query({ tableName: "Users" });
-
-/**
- * Define which fields from the schema are allowed to be
- * passed for this request method {POST}.
- */
-const _Accepted = ["Email", "Password", "FirstName", "LastName", "Salutation"];
 
 /**
  * Create an Endpoint function that will validate
@@ -62,24 +105,31 @@ export const route = (req: Request, res: Response): void => {
   /**
    * Collect the Props that were passed
    */
-  const Props = req.body;
-  const Rules = secureData(_Accepted, SchemaRules);
+  const Props: SchemaUserCreate = {
+    Email: req.body.Email,
+    Password: req.body.Password,
+    Profile: req.body.Profile,
+  };
   const response = new APIResponse(req, res);
 
   /**
    * Build Schema for validation
    */
-  const Schema: JSONSchemaType<SchemaUsers> = {
+  const SchemaBuild = {
     type: "object",
-    properties: Rules,
-    required: ["Email", "Password", "FirstName", "LastName"],
+    properties: {
+      Email,
+      Password,
+      Profile,
+    },
+    required: ["Email", "Password", "Profile"],
     additionalProperties: false,
   };
 
   /**
    * Compile the Schema, then Validate the Input
    */
-  const validate = ajv.compile(Schema);
+  const validate = ajv.compile(SchemaBuild);
   const valid = validate(Props);
 
   /**
@@ -89,10 +139,10 @@ export const route = (req: Request, res: Response): void => {
   if (!valid) {
     const ErrorMessage = buildErrors(validate);
     response.validation({
-      code: "validate-" + ErrorMessage[0].codeType,
-      field: ErrorMessage[0].fieldName,
-      type: ErrorMessage[0].type,
-      expected: ErrorMessage[0].expected,
+      code: "validate-" + ErrorMessage[0].errorCode,
+      primaryField: ErrorMessage[0].primaryField,
+      secondaryField: ErrorMessage[0].secondaryField,
+      params: ErrorMessage[0].params,
     });
     return;
   }
@@ -163,7 +213,11 @@ export const route = (req: Request, res: Response): void => {
 
     // `password` will always be hashed before being saved.
     return hashPassword(user.Password)
-      .then((hash) => ({ ...user, Password: hash }))
+      .then((hash) => ({
+        ...user,
+        Password: hash,
+        Profile: JSON.stringify(user.Profile),
+      }))
       .catch((err: any) => `Error hashing password: ${err}`);
   };
 };

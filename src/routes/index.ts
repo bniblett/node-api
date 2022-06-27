@@ -12,29 +12,27 @@ const router = express.Router();
 /* Import Middlewares */
 import { IsAuthenticated } from "../middleware/Authenticate";
 
+/* Auth Routes */
+import { route as LoginPost } from "./auth/login/post";
+import { route as ForgotPasswordPost } from "./auth/password/forgot/post";
+import { route as ResetPasswordPut } from "./auth/password/reset/put";
+router.post("/auth/login", LoginPost);
+router.post("/auth/forgot-password", ForgotPasswordPost);
+router.put("/auth/reset-password/:Email/:ResetToken", ResetPasswordPut);
+
+/* Account routes */
+import { route as AccountPost } from "./account/post";
+import { route as AccountGet } from "./account/get";
+import { route as AccountPut } from "./account/put";
+import { route as AccountAvatarPut } from "./account/avatar/put";
+router.post("/account", AccountPost);
+router.get("/account", IsAuthenticated, AccountGet);
+router.put("/account", IsAuthenticated, AccountPut);
+router.put("/account/avatar", IsAuthenticated, AccountAvatarPut);
+
 /* Default Routes */
 import { route as DefaultGet } from "./default/get";
 import { route as DefaultPost } from "./default/post";
-
-/* Account Routes */
-import { route as LoginPost } from "./account/login/post";
-import { route as ForgotPasswordPost } from "./account/password/forgot/post";
-import { route as ResetPasswordPut } from "./account/password/reset/put";
-import { route as AccountPost } from "./account/post";
-import { route as UserGet } from "./account/get";
-
-/**
- * Add routes to router, and export
- */
-router.get("/account", IsAuthenticated, UserGet);
-router.post("/account/login", LoginPost);
-router.post("/account/password/forgot", ForgotPasswordPost);
-router.put("/account/password/reset/:Email/:ResetToken", ResetPasswordPut);
-router.post("/account", AccountPost);
-
-/**
- * Default Routes for a Catch-All
- */
 router.get("*", DefaultGet);
 router.post("*", DefaultPost);
 

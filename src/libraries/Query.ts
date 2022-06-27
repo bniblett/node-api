@@ -84,7 +84,16 @@ class QueryHelper implements QueryInterface {
 
     if (typeof custom === "object" && Object.keys(custom).length >= 1) {
       custom.forEach((item, index) => {
-        query.andWhere(item.column, item.operator, item.value);
+        let value: QueryArgCustomValue;
+        switch (item.value) {
+          default:
+            value = item.value;
+            break;
+          case "CURRENT_TIMESTAMP":
+            value = this.query.fn.now();
+            break;
+        }
+        query.andWhere(item.column, item.operator, value);
       });
     }
 

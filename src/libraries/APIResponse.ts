@@ -95,14 +95,18 @@ class APIResponse implements APIResponseInterface {
     );
     const parsed = JSON.parse(readFile);
     const split = code.split("-");
-    const section = split[0];
-    const option = split[1];
-
-    const output = parsed[section][option];
+    let output;
+    if (split.length > 2) {
+      output = parsed[split[0]][split[1]][split[2]];
+    } else {
+      output = parsed[split[0]][split[1]];
+    }
 
     if (typeof errors === "object") {
-      output.detail = output.detail.replace("_FIELD_", errors.field);
-      output.detail = output.detail.replace("_EXPECTED_", errors.expected);
+      output.detail = output.detail.replace("_PRIMARY_", errors.primaryField);
+      output.detail = output.detail.replace("_SECONDARY_", errors.secondaryField);
+      output.detail = output.detail.replace("_LIMIT_", errors.params.limit);
+      output.detail = output.detail.replace("_FORMAT_", errors.params.format);
     }
     return output;
   }
@@ -139,9 +143,9 @@ class APIResponse implements APIResponseInterface {
       success: false,
       code: data.code,
       errors: {
-        field: data.field,
-        type: data.type,
-        expected: data.expected,
+        primaryField: data.primaryField,
+        secondaryField: data.secondaryField,
+        params: data.params,
       },
     });
   }
