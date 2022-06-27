@@ -27,12 +27,16 @@
   },
   "user" : {
     "create" : {
-      "message" : "User Created Successfully",
-      "detail" :  ""
+      "message" : "User Created",
+      "detail" :  "User Created Successfully"
     },
     "exists" : {
       "message" : "User Exists",
       "detail" :  ""
+    },
+    "updated" : {
+      "message" : "User Updated",
+      "detail" :  "User details updated successfully"
     },
     "none" : {
       "message" : "User Not Found",

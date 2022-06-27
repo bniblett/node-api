@@ -1,28 +1,36 @@
 {
   "validate" : {
     "required" : {
-      "message" : "Validation Failed",
-      "detail" :  "The following fields are missing from the JSON Body: '_FIELD_'"
+      "primary": {
+        "message" : "Validation Failed",
+        "detail" :  "The following fields are missing from the JSON Body: '_PRIMARY_'"
+      },
+      "secondary": {
+        "message" : "Validation Failed",
+        "detail" :  "The '_SECONDARY_' property does not exist in '_PRIMARY_'."
+      }
     },
     "properties" : {
-      "message" : "Validation Failed",
-      "detail" :  "Please remove field '_FIELD_' from the JSON Body."
+      "unnecessary": {
+        "message" : "Validation Failed",
+        "detail" :  "The following field(s) should not exist in the JSON Body: '_PRIMARY_'"
+      },
+      "count": {
+        "message" : "Validation Failed",
+        "detail" :  "The '_PRIMARY_' field should have _LIMIT_ properties."
+      }
     },
     "format" : {
       "message" : "Validation Failed",
-      "detail" :  "This field is expected to be a(n) '_EXPECTED_' field."
-    },
-    "pattern" : {
-      "message" : "Validation Failed",
-      "detail" :  "The following fields don't match ${params}"
-    },
-    "maxLength" : {
-      "message" : "Validation Failed",
-      "detail" :  "The following fields aren't meeting maximum length requirements: '_FIELD_'"
+      "detail" :  "This field is expected to be a(n) '_FORMAT_' field."
     },
     "minLength" : {
       "message" : "Validation Failed",
-      "detail" :  "The following fields aren't meeting minimum length requirements: '_FIELD_'"
+      "detail" :  "The '_PRIMARY_' field should be more than: '_LIMIT_' characters"
+    },
+    "maxLength" : {
+      "message" : "Validation Failed",
+      "detail" :  "The '_PRIMARY_' field should be more than: '_LIMIT_' characters"
     }
   },
   "system": {
@@ -43,7 +51,7 @@
       "detail" :  "The following fields don't match ${params}"
     }
   },
-  "tokens" : {
+  "token" : {
     "missing" : {
       "message" : "Validation Failed",
       "detail" :  "The following fields don't match ${params}"
