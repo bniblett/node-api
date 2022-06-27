@@ -56,71 +56,89 @@ const buildErrors = (validate) => {
     /**
      * fields to be passed back in the error message
      */
-    let codeType: string;
-    let fieldName: string;
-    let type: string;
-    let expected: string | null;
+    let errorCode: ValidationErrorCode;
+    let primaryField: ValidationPrimaryField;
+    let secondaryField: ValidationSecondaryField;
+    let params: ValidationParams;
 
     /**
      * Switch based on error keyword
      */
-    switch (error?.keyword) {
-      /* Fields are included that shoudn't */
-      case "required":
-        codeType = "required";
-        fieldName = error?.params?.missingProperty;
-        type = error?.keyword;
-        expected = null;
+    switch (true) {
+      /**
+       * Field(s) are missing from the POST JSON Body that
+       * shoud be present
+       */
+      case error?.keyword == "required" && error?.instancePath == "":
+        errorCode = "required-primary";
+        primaryField = error?.params?.missingProperty;
+        secondaryField = null;
+        params = error?.params;
         break;
 
-      /* Fields are included that shoudn't */
-      case "additionalProperties":
-        codeType = "properties";
-        fieldName = error?.params?.additionalProperty;
-        type = "UnexpectedField";
-        expected = null;
+      /**
+       * Field(s) are missing from a JSON field Body that
+       * shoud be present
+       */
+      case error?.keyword == "required" && error?.instancePath != "":
+        errorCode = "required-secondary";
+        primaryField = error?.instancePath.replace("/", "");
+        secondaryField = error?.params?.missingProperty;
+        params = error?.params;
+        break;
+
+      /**
+       * Field(s) exist in the JSON field Body that should
+       * NOT be present
+       */
+      case error?.keyword == "additionalProperties" &&
+        error?.instancePath == "":
+        errorCode = "properties-unnecessary";
+        primaryField = error?.params?.additionalProperty;
+        secondaryField = null;
+        params = error?.params;
+        break;
+
+      /* Min / Max Object or Array Properties aren't valid */
+      case error?.keyword == "minProperties" ||
+        error?.keyword == "maxProperties":
+        errorCode = "properties-count";
+        primaryField = field;
+        secondaryField = null;
+        params = error?.params;
         break;
 
       /* custom format filters */
-      case "format":
-        codeType = "format";
-        fieldName = field;
-        type = error?.params?.format;
-        expected = error?.params?.format;
-        break;
-
-      /* custom pattern filters */
-      case "pattern":
-        codeType = "pattern";
-        fieldName = field;
-        type = error?.params?.pattern;
-        expected = null;
+      case error?.keyword == "format":
+        errorCode = "format";
+        primaryField = field;
+        secondaryField = null;
+        params = error?.params;
         break;
 
       /* Min / Max Lengths aren't valid */
-      case "minLength":
-      case "maxLength":
-        codeType = error?.keyword;
-        fieldName = field;
-        type = error?.keyword;
-        expected = error?.params?.limit;
+      case error?.keyword == "minLength" || error?.keyword == "maxLength":
+        errorCode = error?.keyword;
+        primaryField = field;
+        secondaryField = null;
+        params = error?.params;
         break;
 
       /* default error message */
       default:
-        codeType = "no";
-        fieldName = field;
-        type = error?.keyword;
-        expected = null;
+        errorCode = "no";
+        primaryField = field;
+        secondaryField = error?.keyword;
+        params = null;
         break;
     }
 
     /* Add to Error Message Array */
     ErrorMessage.push({
-      codeType: codeType,
-      fieldName: fieldName,
-      type: type,
-      expected: expected,
+      errorCode: errorCode,
+      primaryField: primaryField,
+      secondaryField: secondaryField,
+      params: params,
     });
   });
 
