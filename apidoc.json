@@ -1,8 +1,11 @@
 {
   "name": "example",
-  "version": "0.3.0",
+  "version": "0.0.1",
   "description": "apidoc example project.",
   "apidoc": {
+    "title": "API Title",
+    "url": "/api",
+    "sampleUrl": "http://localhost:3000/api",
     "header": {
       "title": "Introduction",
       "filename": "./docs-src/header.md"
@@ -10,6 +13,22 @@
     "footer": {
       "title": "Best practices",
       "filename": "./docs-src/footer.md"
-    }
+    },
+    "template": {
+      "forceLanguage": "en",
+      "showRequiredLabels": true,
+      "aloneDisplay": false
+    },
+    "order": [
+      "Auth",
+        "Login",
+        "ForgotPassword",
+        "ResetPassword",
+      "Accounts",
+        "CreateUser",
+        "GetUser",
+        "UpdateUserData",
+        "UpdateUserAvatar"
+    ]
   }
 }
