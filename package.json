@@ -4,7 +4,8 @@
   "description": "Node Rest API",
   "main": "src/index.js",
   "scripts": {
-    "docs": "apidoc -i docs/ -o docs/ -t docs/templates/template/",
+    "docs": "apidoc -i src/routes/ -o docs/ -t docs-src/template/",
+    "docs2": "apidoc -i src/routes/ -o docs/ -t node_modules/dash-apidoc-template/template",
     "start": "ts-node --files ./src/index.ts",
     "start:nodemon": "./node_modules/nodemon/bin/nodemon.js",
     "test": "echo \"Error: no test specified\" && exit 1"
