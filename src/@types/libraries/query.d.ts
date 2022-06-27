@@ -17,13 +17,7 @@ declare global {
     update(
       props: { [key: string]: string },
       filters: { [key: string]: string },
-      custom?:
-        | {
-            field: string;
-            operator: ">" | ">=" | "<" | "<=" | "=" | "!=";
-            value: string;
-          }[]
-        | undefined
+      custom?: QueryCustomWhere
     ): Promise<any[]>;
     //destroy
     setToken(props: { ResetToken: string; Email: string }): Promise<any[]>;
@@ -41,4 +35,10 @@ declare global {
   type QueryFields = string[] | undefined;
   type QueryTimeout = number | undefined;
   type QueryAnyProps = { [key: string]: string };
+  type QueryArgCustomValue = any | string;
+  type QueryCustomWhere = {
+    column: string;
+    operator: ">" | ">=" | "<" | "<=" | "=" | "!=";
+    value: QueryArgCustomValue;
+  }[];
 }
