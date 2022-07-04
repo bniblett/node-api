@@ -302,14 +302,13 @@
         <tbody>
         {{#each this}}
           <tr>
-            <td class="code">{{{splitFill field "." "&nbsp;&nbsp;"}}}
-            {{#if optional}}
-              <span class="label optional">{{__ "optional"}}</span>
-            {{else}}
-              {{#if ../template.showRequiredLabels}}
-                <span class="label required">{{__ "required"}}</span>
+            <td class="code">{{this.field}}&nbsp;&nbsp;
+              {{#if optional}}
+                <span class="label optional">{{__ "optional"}}</span>
+              {{else}}
+                  <span class="label required">{{__ "required"}}</span>
               {{/if}}
-            {{/if}}</td>
+              </td>
             {{#if ../../_hasType}}
               <td class="code">
                 {{{type}}}
